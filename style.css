@@ -183,3 +183,17 @@ body {
 .site-footer a:hover {
   color: #666666;
 }
+
+/* suggestion bubble */
+.suggestion-bubble {
+  background: var(--oap-theme-background-brand-hover);
+  color: var(--iconic-black);
+  border: 2px dashed var(--oap-theme-color-brand-a11y);
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+  margin-bottom: 10px;
+}
+.suggestion-bubble:hover {
+  background: var(--eternal-gold);
+  border-color: var(--passionate-red);
+}

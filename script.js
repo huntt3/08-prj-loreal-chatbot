@@ -22,16 +22,26 @@ let showHistory = false;
 // Set initial message
 addMessageToChat("assistant", "Hello! How can I help you today?");
 
-// Load a random popular prompt and show it as a suggestion
+// Show a random popular prompt as a clickable suggestion
 fetch("popularPrompts.json")
   .then((response) => response.json())
   .then((prompts) => {
     const randomPopularPrompt =
       prompts[Math.floor(Math.random() * prompts.length)];
-    addMessageToChat(
-      "assistant",
-      `A popular question is: <em>${randomPopularPrompt}</em>`
-    );
+    // Create a suggestion bubble
+    const suggestionDiv = document.createElement("div");
+    suggestionDiv.className = "assistant-message suggestion-bubble";
+    suggestionDiv.innerHTML = `<strong>Smart Product Advisor:</strong> 💡 Try asking: <em>${randomPopularPrompt}</em>`;
+    suggestionDiv.title = "Click to ask this question";
+    suggestionDiv.addEventListener("click", () => {
+      // Submit the prompt as if the user typed it
+      userInput.value = randomPopularPrompt;
+      chatForm.dispatchEvent(new Event("submit"));
+      // Remove the suggestion after click
+      suggestionDiv.remove();
+    });
+    chatbotMessages.appendChild(suggestionDiv);
+    chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
   });
 
 // Helper function to render messages in the chat window
