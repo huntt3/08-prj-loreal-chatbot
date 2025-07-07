@@ -7,7 +7,7 @@ const chatWindow = document.getElementById("chatWindow");
 const messages = [
   {
     role: "system",
-    content: `You are a professional but friendly Loreal expert and advocate. You guide the user to L'Oreal products, routines and recommendations.\n\nIf a user's query is unrelated to L'Oreal products, L'Oreal routines and L'Oreal recommendations, respond by stating that you do not know. L'Oreal may be spelled Loreal, L'Oréal among others.`,
+    content: `You are a professional but friendly Loreal expert and advocate. You guide the user to L'Oreal products, beauty routines and recommendations.\n\nIf a user's query is unrelated to L'Oreal products, L'Oreal routines and L'Oreal recommendations, respond by stating that you do not know. L'Oreal may be spelled Loreal, L'Oréal among others.`,
   },
 ];
 
@@ -77,13 +77,34 @@ async function sendMessageToOpenAI(userInput) {
       headers: headers,
       body: JSON.stringify(body),
     });
+
+    // Check for HTTP errors
+    if (!response.ok) {
+      throw new Error(`API request failed with status ${response.status}`);
+    }
+
     // Parse the response as JSON
     const data = await response.json();
+
     // Remove 'Thinking...' animation
     const thinkingMsg = document.getElementById("thinking-message");
     if (thinkingMsg) thinkingMsg.remove();
-    // Get the assistant's reply
-    const assistantReply = data.choices && data.choices[0].message.content;
+
+    // Check if the response contains a valid assistant reply
+    const assistantReply =
+      data.choices &&
+      data.choices[0] &&
+      data.choices[0].message &&
+      data.choices[0].message.content;
+    if (!assistantReply) {
+      addMessageToChat(
+        "assistant",
+        "Sorry, I couldn't understand the response from the server."
+      );
+      console.error("No valid assistant reply in response:", data);
+      return;
+    }
+
     // Add the assistant's reply to the chat window
     addMessageToChat("assistant", assistantReply);
     // Add the assistant's reply to the messages array
@@ -93,7 +114,10 @@ async function sendMessageToOpenAI(userInput) {
     const thinkingMsg = document.getElementById("thinking-message");
     if (thinkingMsg) thinkingMsg.remove();
     // Show an error message if something goes wrong
-    addMessageToChat("assistant", "Sorry, there was an error.");
-    console.error(error);
+    addMessageToChat(
+      "assistant",
+      "Sorry, there was a problem connecting to the server. Please try again later."
+    );
+    console.error("API error:", error);
   }
 }
