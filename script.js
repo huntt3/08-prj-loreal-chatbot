@@ -15,7 +15,7 @@ const messages = [
 const chatbotMessages = chatWindow;
 
 // Set initial message
-chatWindow.textContent = "👋 Hello! How can I help you today?";
+addMessageToChat("assistant", "Hello! How can I help you today?");
 
 // Helper function to add messages to the chat window
 function addMessageToChat(sender, message) {
