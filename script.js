@@ -22,6 +22,18 @@ let showHistory = false;
 // Set initial message
 addMessageToChat("assistant", "Hello! How can I help you today?");
 
+// Load a random popular prompt and show it as a suggestion
+fetch("popularPrompts.json")
+  .then((response) => response.json())
+  .then((prompts) => {
+    const randomPopularPrompt =
+      prompts[Math.floor(Math.random() * prompts.length)];
+    addMessageToChat(
+      "assistant",
+      `A popular question is: <em>${randomPopularPrompt}</em>`
+    );
+  });
+
 // Helper function to render messages in the chat window
 function renderMessages() {
   chatbotMessages.innerHTML = "";
