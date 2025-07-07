@@ -1,3 +1,20 @@
+:root {
+  --iconic-black: #000000;
+  --radiant-white: #ffffff;
+  --passionate-red: #ff003b;
+  --eternal-gold: #e3a535;
+
+
+}
+/*
+  Helvetica Now Display W05 Reg
+Helvetica Now Display W05 Lt
+Helvetica Now Display W05 Bd
+
+Headers / Menus.
+Halesworth eText Bold
+Halesworth eText Medium*/
+
 /* —— basic reset —— */
 * {
   box-sizing: border-box;
