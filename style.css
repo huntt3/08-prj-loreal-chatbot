@@ -121,31 +121,36 @@ body {
   outline-offset: 2px;
 }
 
+button,
 .chat-form button {
-  font-size: 18px;
-  background: #000;
-  color: #fff;
+  font-family: "Montserrat", Arial, Helvetica, sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  background: var(--eternal-gold);
+  color: var(--iconic-black);
   border: none;
-  padding: 12px;
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  border-radius: 999px; /* Oval shape */
+  padding: 14px 32px;
+  margin: 0;
+  box-shadow: 0 2px 12px rgba(227, 165, 53, 0.1);
   cursor: pointer;
-  transition: background 0.3s;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s, transform 0.1s;
+  outline: none;
+  letter-spacing: 0.5px;
+  text-transform: none;
 }
 
-.chat-form button .material-icons {
-  font-size: 24px;
-}
-
+button:hover,
 .chat-form button:hover {
-  background: #666666;
+  background: var(--passionate-red);
+  color: var(--radiant-white);
+  box-shadow: 0 4px 24px rgba(255, 0, 59, 0.12);
+  transform: translateY(-2px) scale(1.03);
 }
 
+button:focus,
 .chat-form button:focus {
-  outline: 2px solid #000;
+  outline: 2px solid var(--passionate-red);
   outline-offset: 2px;
 }
 
@@ -196,4 +201,13 @@ body {
 .suggestion-bubble:hover {
   background: var(--eternal-gold);
   border-color: var(--passionate-red);
+}
+
+#historyBtn,
+#randomPromptBtn {
+  min-width: 170px;
+  margin-bottom: 8px;
+  border-radius: 999px;
+  font-size: 16px;
+  padding: 14px 32px;
 }
