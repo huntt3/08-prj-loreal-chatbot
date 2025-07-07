@@ -16,8 +16,41 @@ const messages = [
 // Reference for appending messages (use chatWindow for simplicity)
 const chatbotMessages = chatWindow;
 
+// Track if history is shown
+let showHistory = false;
+
 // Set initial message
 addMessageToChat("assistant", "Hello! How can I help you today?");
+
+// Helper function to render messages in the chat window
+function renderMessages() {
+  chatbotMessages.innerHTML = "";
+  if (showHistory) {
+    // Show all messages except the system message
+    for (let i = 1; i < messages.length; i++) {
+      const msg = messages[i];
+      addMessageToChat(msg.role === "user" ? "user" : "assistant", msg.content);
+    }
+  } else {
+    // Show only the last user and last assistant message (if they exist)
+    let lastUserIdx = -1;
+    let lastAssistantIdx = -1;
+    for (let i = messages.length - 1; i >= 1; i--) {
+      if (lastUserIdx === -1 && messages[i].role === "user") lastUserIdx = i;
+      if (lastAssistantIdx === -1 && messages[i].role === "assistant")
+        lastAssistantIdx = i;
+      if (lastUserIdx !== -1 && lastAssistantIdx !== -1) break;
+    }
+    if (lastUserIdx !== -1)
+      addMessageToChat("user", messages[lastUserIdx].content);
+    if (lastAssistantIdx !== -1)
+      addMessageToChat("assistant", messages[lastAssistantIdx].content);
+    if (lastUserIdx === -1 && lastAssistantIdx === -1) {
+      // If no messages, show the welcome message
+      addMessageToChat("assistant", "Hello! How can I help you today?");
+    }
+  }
+}
 
 // Helper function to add messages to the chat window
 function addMessageToChat(sender, message) {
@@ -32,6 +65,14 @@ function addMessageToChat(sender, message) {
   chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
 }
 
+// History button logic
+const historyBtn = document.getElementById("historyBtn");
+historyBtn.addEventListener("click", () => {
+  showHistory = !showHistory;
+  renderMessages();
+  historyBtn.textContent = showHistory ? "Hide History" : "History";
+});
+
 /* Handle form submit */
 chatForm.addEventListener("submit", (e) => {
   e.preventDefault();
@@ -44,11 +85,9 @@ chatForm.addEventListener("submit", (e) => {
 
 // Function to send user input to OpenAI and get a response
 async function sendMessageToOpenAI(userInput) {
-  // Add the user's message to the chat window
-  addMessageToChat("user", userInput);
-
   // Add the user's message to the messages array
   messages.push({ role: "user", content: userInput });
+  renderMessages();
 
   // Add 'Thinking...' animation
   const thinkingDiv = document.createElement("div");
@@ -99,27 +138,32 @@ async function sendMessageToOpenAI(userInput) {
       data.choices[0].message &&
       data.choices[0].message.content;
     if (!assistantReply) {
-      addMessageToChat(
-        "assistant",
-        "Sorry, I couldn't understand the response from the server."
-      );
+      messages.push({
+        role: "assistant",
+        content: "Sorry, I couldn't understand the response from the server.",
+      });
+      renderMessages();
       console.error("No valid assistant reply in response:", data);
       return;
     }
 
-    // Add the assistant's reply to the chat window
-    addMessageToChat("assistant", assistantReply);
     // Add the assistant's reply to the messages array
     messages.push({ role: "assistant", content: assistantReply });
+    renderMessages();
   } catch (error) {
     // Remove 'Thinking...' animation
     const thinkingMsg = document.getElementById("thinking-message");
     if (thinkingMsg) thinkingMsg.remove();
     // Show an error message if something goes wrong
-    addMessageToChat(
-      "assistant",
-      "Sorry, there was a problem connecting to the server. Please try again later."
-    );
+    messages.push({
+      role: "assistant",
+      content:
+        "Sorry, there was a problem connecting to the server. Please try again later.",
+    });
+    renderMessages();
     console.error("API error:", error);
   }
 }
+
+// Initial render
+renderMessages();
