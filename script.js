@@ -3,6 +3,8 @@ const chatForm = document.getElementById("chatForm");
 const userInput = document.getElementById("userInput");
 const chatWindow = document.getElementById("chatWindow");
 
+const workerUrl = "https://loreal-worker.trevorhunt987.workers.dev/";
+
 // Store the conversation history, starting with a system message
 const messages = [
   {
@@ -57,11 +59,11 @@ async function sendMessageToOpenAI(userInput) {
   chatbotMessages.appendChild(thinkingDiv);
   chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
 
-  // Prepare the API request
-  const apiUrl = "https://api.openai.com/v1/chat/completions";
+  // Prepare the API request for the Cloudflare Worker
+  const apiUrl = workerUrl; // Use the workerUrl instead of OpenAI endpoint
   const headers = {
     "Content-Type": "application/json",
-    Authorization: `Bearer ${OPENAI_API_KEY}`, // Use your API key from secrets.js
+    // No Authorization header needed; worker handles the key
   };
   const body = {
     model: "gpt-4o",
@@ -71,7 +73,7 @@ async function sendMessageToOpenAI(userInput) {
   };
 
   try {
-    // Send the request to OpenAI
+    // Send the request to the Cloudflare Worker
     const response = await fetch(apiUrl, {
       method: "POST",
       headers: headers,
