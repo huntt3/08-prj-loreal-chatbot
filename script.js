@@ -3,8 +3,13 @@ const chatForm = document.getElementById("chatForm");
 const userInput = document.getElementById("userInput");
 const chatWindow = document.getElementById("chatWindow");
 
-// Store the conversation history
-const messages = [];
+// Store the conversation history, starting with a system message
+const messages = [
+  {
+    role: "system",
+    content: `You are a professional but friendly Loreal expert and advocate. You guide the user to L'Oreal products, routines and recommendations.\n\nIf a user's query is unrelated to L'Oreal products, L'Oreal routines and L'Oreal recommendations, respond by stating that you do not know. L'Oreal may be spelled Loreal, L'Oréal among others.`,
+  },
+];
 
 // Reference for appending messages (use chatWindow for simplicity)
 const chatbotMessages = chatWindow;
